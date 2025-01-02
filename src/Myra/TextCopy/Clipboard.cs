@@ -1,10 +1,12 @@
 ﻿using MonoGame.Utilities;
 using System;
+using Myra.TextCopy;
 
 namespace TextCopy
 {
     public static class Clipboard
     {
+        public static ICustomClipboard? CustomClipboard { get; set; }
 		public static bool UseLocalClipboard = false;
 		private static string _localTextClipboard;
 
@@ -18,6 +20,12 @@ namespace TextCopy
                 throw new ArgumentNullException(nameof(text));
             }
 
+            if (CustomClipboard != default)
+            {
+                CustomClipboard.Text = text;
+                return;
+            }
+
 			if (UseLocalClipboard)
 			{
 				_localTextClipboard = text;
@@ -29,6 +37,11 @@ namespace TextCopy
 
         public static string GetText()
         {
+            if (CustomClipboard != default)
+            {
+                return CustomClipboard.Text;
+            }
+
 			if (UseLocalClipboard)
 			{
 				return _localTextClipboard;
